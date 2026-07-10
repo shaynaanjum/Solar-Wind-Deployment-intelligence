@@ -1,112 +1,123 @@
-# 🚀 Milestone 1 – Project Initialization & Core Setup
+# 🌍 Solar & Wind Deployment Intelligence Platform
 
-## Project Title
-Solar & Wind Deployment Intelligence Platform
+# Milestone 1 – Project Initialization & Core Setup
+
+## Project Overview
+
+The Solar & Wind Deployment Intelligence Platform is a web-based application that helps analyze the renewable energy potential of a selected location. Users can select a location using latitude and longitude or an interactive map, and the system provides weather information along with a preliminary solar and wind suitability analysis.
+---
+# Objectives
+
+The objectives of Milestone 1 were to:
+
+- Define the project objectives and workflow.
+- Design the overall system architecture.
+- Design the database schema.
+- Set up the frontend and backend development environments.
+- Develop the initial user interface.
+- Build the backend API.
+- Integrate weather data.
+- Develop the initial renewable energy analysis module.
 
 ---
 
-## Objective
-
-The objective of Milestone 1 was to establish the project foundation by setting up the frontend and backend environments, designing the project architecture, integrating weather data, and developing the core renewable energy analysis module.
-
----
-
-# Completed Tasks
+# Completed Work
 
 ## 1. Project Initialization
 
-- Created project repository
-- Set up React + Vite frontend
-- Set up FastAPI backend
-- Configured project folder structure
-- Installed required dependencies
+- Created project repository.
+- Organized project folder structure.
+- Configured Python virtual environment.
+- Installed project dependencies.
 
 ---
 
-## 2. System Architecture
+## 2. Frontend Development
 
-Designed a modular architecture consisting of:
-
-- React Frontend
-- FastAPI Backend
-- REST API Communication
-- Weather Service
-- Renewable Analysis Service
-- Database Layer
-
----
-
-## 3. Frontend Development
+Developed the frontend using React and Vite.
 
 Implemented:
 
-- User interface for entering latitude and longitude
+- Home page
+- Latitude input
+- Longitude input
 - Analyze button
 - Loading animation
-- Interactive Leaflet map
-- Weather information display
+- Weather information cards
 - Solar score progress bar
 - Wind score progress bar
 - Recommendation display
 
-Technologies Used:
+---
 
-- React
-- Vite
-- CSS
-- React Leaflet
+## 3. Interactive Map
+
+Integrated Leaflet with OpenStreetMap.
+
+Features:
+
+- Interactive map
+- Location selection
+- Marker placement
+- Automatic coordinate selection
 
 ---
 
 ## 4. Backend Development
 
-Implemented REST APIs using FastAPI.
+Developed REST APIs using FastAPI.
 
-Features:
+Implemented:
 
-- Location analysis endpoint
-- Weather API integration
+- Analyze location endpoint
+- Weather service integration
 - JSON response generation
 - Input validation
 
-Technologies:
+---
 
-- FastAPI
-- Python
-- Requests
-- Pydantic
+## 5. Database Design
+
+Designed the initial database using SQLAlchemy.
+
+Models created:
+
+- User
+- Project
+- Site
 
 ---
 
-## 5. Weather API Integration
+## 6. Weather API Integration
 
-Integrated OpenWeather API to retrieve live weather information.
+Integrated OpenWeather API.
 
-Retrieved parameters:
+Retrieved data:
 
 - Temperature
 - Humidity
 - Wind Speed
-- -------
-## 6. Renewable Energy Analysis
+---
+## 7. Renewable Energy Analysis
 
-Implemented a basic renewable energy suitability analysis using weather data.
+Implemented a basic renewable energy suitability analysis.
 
-Generated outputs:
+The analysis currently uses weather parameters to generate:
 
 - Solar Score
 - Wind Score
 - Recommendation
 
 Example Response
+
 ```json
 {
-  "latitude": 23.8048,
-  "longitude": 79.8838,
-  "temperature": 27.18,
-  "humidity": 83,
-  "wind_speed": 6.01,
-  "solar_score": 85,
-  "wind_score": 80,
-  "recommendation": "Moderate Renewable Potential"
+    "latitude": 23.8048,
+    "longitude": 79.8838,
+    "temperature": 27.18,
+    "humidity": 83,
+    "wind_speed": 6.01,
+    "solar_score": 85,
+    "wind_score": 80,
+    "recommendation": "Moderate Renewable Potential"
 }
