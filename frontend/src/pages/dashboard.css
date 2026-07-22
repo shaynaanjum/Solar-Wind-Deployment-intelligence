@@ -1,0 +1,83 @@
+.dashboard-header{
+    margin-bottom:30px;
+}
+
+.dashboard-header h1{
+    font-size:34px;
+    font-weight:700;
+    color:#1f2937;
+}
+
+.dashboard-header p{
+    color:#95989e;
+    margin-top:6px;
+}
+
+.stats-grid{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:25px;
+    margin-bottom:40px;
+
+}
+
+.stat-card{
+
+    color:rgb(242, 237, 237);
+    border-radius:18px;
+    padding:28px;
+    transition:.35s;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.stat-card span{
+
+    font-size:15px;
+
+}
+
+.stat-card h2{
+
+    margin:15px 0 5px;
+    font-size:38px;
+
+}
+
+.stat-card small{
+
+    font-size:15px;
+    opacity:.9;
+
+}
+
+.solar{
+
+background:linear-gradient(135deg,#f59e0b,#f97316);
+
+}
+
+.temp{
+
+background:linear-gradient(135deg,#070f11,#2563eb);
+
+}
+
+.wind{
+
+background:linear-gradient(135deg,#22c55e,#10b981);
+
+}
+
+.elevation{
+
+background:linear-gradient(135deg,#8b5cf6,#7c3aed);
+
+}
