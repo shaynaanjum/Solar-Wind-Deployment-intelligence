@@ -1,1 +1,0 @@
-# Solar-Wind-Deployment-intelligence
