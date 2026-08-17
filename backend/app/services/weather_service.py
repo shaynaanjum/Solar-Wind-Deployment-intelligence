@@ -1,16 +1,53 @@
+import os
 import requests
+from functools import lru_cache
+from dotenv import load_dotenv
 
-API_KEY = "ad15a8ee2cfe82751eb9217b6e09b4fc"
 
+# Load environment variables
+load_dotenv()
+
+
+# Get API key from .env
+API_KEY = os.getenv("OPENWEATHER_API_KEY")
+
+
+@lru_cache(maxsize=100)
 def get_weather(latitude, longitude):
+
+    if not API_KEY:
+        raise RuntimeError(
+            "OPENWEATHER_API_KEY is not configured in .env"
+        )
+
     url = (
-        f"https://api.openweathermap.org/data/2.5/weather"
-        f"?lat={latitude}&lon={longitude}&appid={API_KEY}&units=metric"
+        "https://api.openweathermap.org/data/2.5/weather"
+        f"?lat={latitude}"
+        f"&lon={longitude}"
+        f"&appid={API_KEY}"
+        f"&units=metric"
     )
 
-    response = requests.get(url)
+    try:
+        response = requests.get(
+            url,
+            timeout=5
+        )
 
-    if response.status_code == 200:
+        response.raise_for_status()
+
         return response.json()
 
-    return None
+    except requests.RequestException as e:
+
+        print("Weather API Error:", e)
+
+        return {
+            "main": {
+                "temp": 0,
+                "humidity": 0
+            },
+            "wind": {
+                "speed": 0
+            }
+        }

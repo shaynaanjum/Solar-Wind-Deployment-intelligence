@@ -1,182 +1,469 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import jsPDF from "jspdf";
+import API from "../services/api";
+import "./Reports.css";
 
 function Reports() {
-  const [report, setReport] = useState(null);
+  const [sites, setSites] = useState([]);
+  const [selectedSite, setSelectedSite] = useState(null);
+  const [analysis, setAnalysis] = useState(null);
 
-  const generateReport = () => {
-    const latestResult = localStorage.getItem("latestAnalysis");
+  const [loading, setLoading] = useState(true);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [error, setError] = useState("");
 
-    if (!latestResult) {
-      alert("No analysis available. Please analyze a location first.");
+  // ========================================
+  // LOAD SITES
+  // ========================================
+
+  useEffect(() => {
+    loadSites();
+  }, []);
+
+  const loadSites = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await API.get("/sites/");
+
+      setSites(response.data || []);
+
+      if (response.data?.length > 0) {
+        setSelectedSite(response.data[0]);
+      }
+    } catch (err) {
+      console.error("Reports sites error:", err);
+
+      setError(
+        err.response?.data?.detail ||
+        "Unable to load sites."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ========================================
+  // ANALYZE SITE
+  // ========================================
+
+  const analyzeSite = async () => {
+    if (!selectedSite) {
+      setError("Please select a site.");
       return;
     }
 
-    setReport(JSON.parse(latestResult));
+    try {
+      setAnalyzing(true);
+      setError("");
+
+      const response = await API.get(
+        `/analysis/site/${selectedSite.id}`
+      );
+
+      setAnalysis(response.data);
+    } catch (err) {
+      console.error("Report analysis error:", err);
+
+      setError(
+        err.response?.data?.detail ||
+        "Unable to analyze selected site."
+      );
+
+      setAnalysis(null);
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
-  const downloadPDF = () => {
-    if (!report) {
-      alert("Please generate a report first.");
+  // ========================================
+  // DOWNLOAD REPORT
+  // ========================================
+
+  const downloadReport = () => {
+    if (!selectedSite) {
+      setError("Please select a site first.");
       return;
     }
 
-    const doc = new jsPDF();
+    const report = `
+SOLAR & WIND DEPLOYMENT INTELLIGENCE PLATFORM
+===============================================
 
-    doc.setFontSize(20);
-    doc.text("Renewable Energy Assessment Report", 20, 20);
+SITE DEPLOYMENT REPORT
 
-    doc.setFontSize(12);
+Site ID:
+${selectedSite.id}
 
-    let y = 40;
+Location:
+${selectedSite.location_name || "Selected Location"}
 
-    doc.text(`Latitude : ${report.latitude}`, 20, y);
-    y += 10;
+Latitude:
+${selectedSite.latitude}
 
-    doc.text(`Longitude : ${report.longitude}`, 20, y);
-    y += 10;
+Longitude:
+${selectedSite.longitude}
 
-    doc.text(`Temperature : ${report.temperature} °C`, 20, y);
-    y += 10;
+-----------------------------------------------
+RESOURCE ASSESSMENT
+-----------------------------------------------
 
-    doc.text(`Humidity : ${report.humidity}%`, 20, y);
-    y += 10;
+Solar Score:
+${selectedSite.solar_score ?? 0}/100
 
-    doc.text(`Wind Speed : ${report.wind_speed} m/s`, 20, y);
-    y += 10;
+Wind Score:
+${selectedSite.wind_score ?? 0}/100
 
-    doc.text(
-      `Solar Irradiance : ${report.solar_irradiance} kWh/m²/day`,
-      20,
-      y
-    );
-    y += 10;
+Wind Potential:
+${selectedSite.wind_potential ?? 0}
 
-    doc.text(`Solar Score : ${report.solar_score}`, 20, y);
-    y += 10;
+Recommendation:
+${selectedSite.recommendation || "Not specified"}
 
-    doc.text(`Wind Score : ${report.wind_score}`, 20, y);
-    y += 10;
+-----------------------------------------------
+ENVIRONMENTAL ANALYSIS
+-----------------------------------------------
 
-    doc.text(`Wind Potential : ${report.wind_potential}`, 20, y);
-    y += 10;
+Solar Irradiance:
+${analysis?.solar_irradiance ?? "N/A"} kWh/m²/day
 
-    doc.text(`Elevation : ${report.elevation} meters`, 20, y);
-    y += 10;
+Temperature:
+${analysis?.temperature ?? "N/A"} °C
 
-    doc.text(`Recommendation : ${report.recommendation}`, 20, y);
-    y += 15;
+Wind Speed:
+${analysis?.wind_speed ?? "N/A"} m/s
 
-    doc.text(
-      `Generated On : ${new Date().toLocaleString()}`,
-      20,
-      y
-    );
+Humidity:
+${analysis?.humidity ?? "N/A"} %
 
-    doc.save("Renewable_Energy_Report.pdf");
+-----------------------------------------------
+DEPLOYMENT RECOMMENDATION
+-----------------------------------------------
+
+${selectedSite.recommendation || "Further assessment required."}
+
+-----------------------------------------------
+END OF REPORT
+-----------------------------------------------
+`;
+
+    const blob = new Blob([report], {
+      type: "text/plain",
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download =
+      `site-${selectedSite.id}-deployment-report.txt`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
   };
+
+  // ========================================
+  // LOADING
+  // ========================================
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="reports-page">
+          <div className="investment-loading">
+            ⏳ Loading deployment reports...
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
-      <h1>📄 Resource Assessment Reports</h1>
+      <div className="reports-page">
 
-      <button
-        onClick={generateReport}
-        style={{
-          background: "#16a34a",
-          color: "white",
-          border: "none",
-          padding: "12px 20px",
-          borderRadius: "6px",
-          cursor: "pointer",
-          marginBottom: "15px",
-          marginRight: "10px",
-        }}
-      >
-        Generate Report
-      </button>
+        {/* HEADER */}
 
-      <button
-        onClick={downloadPDF}
-        style={{
-          background: "#2563eb",
-          color: "white",
-          border: "none",
-          padding: "12px 20px",
-          borderRadius: "6px",
-          cursor: "pointer",
-          marginBottom: "25px",
-        }}
-      >
-        📥 Download PDF
-      </button>
-
-      {!report ? (
-        <p>No report generated.</p>
-      ) : (
-        <div
-          style={{
-            background: "white",
-            padding: "25px",
-            borderRadius: "10px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-          }}
-        >
-          <h2>🌍 Renewable Energy Assessment Report</h2>
-
-          <hr />
-
-          <h3>📍 Location</h3>
-          <p><strong>Latitude:</strong> {report.latitude}</p>
-          <p><strong>Longitude:</strong> {report.longitude}</p>
-
-          <hr />
-
-          <h3>🌦 Weather</h3>
-          <p><strong>Temperature:</strong> {report.temperature} °C</p>
-          <p><strong>Humidity:</strong> {report.humidity} %</p>
-          <p><strong>Wind Speed:</strong> {report.wind_speed} m/s</p>
-
-          <hr />
-
-          <h3>☀ Solar Resource</h3>
-          <p><strong>Solar Irradiance:</strong> {report.solar_irradiance} kWh/m²/day</p>
-          <p><strong>Solar Score:</strong> {report.solar_score}</p>
-
-          <hr />
-
-          <h3>💨 Wind Resource</h3>
-          <p><strong>Wind Score:</strong> {report.wind_score}</p>
-          <p><strong>Wind Potential:</strong> {report.wind_potential}</p>
-
-          <hr />
-
-          <h3>⛰ Terrain</h3>
-          <p><strong>Elevation:</strong> {report.elevation} meters</p>
-
-          <hr />
-
-          <h3>✅ Recommendation</h3>
-
-          <p
-            style={{
-              color: "green",
-              fontWeight: "bold",
-              fontSize: "20px",
-            }}
-          >
-            {report.recommendation}
-          </p>
-
-          <hr />
+        <div className="reports-header">
+          <h1>📄 Deployment Reports</h1>
 
           <p>
-            <strong>Generated On:</strong>{" "}
-            {new Date().toLocaleString()}
+            Generate renewable-energy site intelligence
+            and deployment reports.
           </p>
         </div>
-      )}
+
+
+        {/* ERROR */}
+
+        {error && (
+          <div className="investment-error">
+            ❌ {error}
+          </div>
+        )}
+
+
+        {/* SITE SELECTOR */}
+
+        <div
+          className="report-section"
+          style={{
+            marginBottom: "25px",
+          }}
+        >
+          <h2>📍 Select Site</h2>
+
+          <div
+            style={{
+              display: "flex",
+              gap: "12px",
+              flexWrap: "wrap",
+            }}
+          >
+
+            <select
+              value={selectedSite?.id || ""}
+              onChange={(e) => {
+                const site = sites.find(
+                  (item) =>
+                    String(item.id) === e.target.value
+                );
+
+                setSelectedSite(site);
+                setAnalysis(null);
+              }}
+              style={{
+                flex: 1,
+                minWidth: "250px",
+                padding: "12px",
+                borderRadius: "8px",
+                border: "1px solid #d1d5db",
+              }}
+            >
+
+              <option value="">
+                Select a site
+              </option>
+
+              {sites.map((site) => (
+                <option
+                  key={site.id}
+                  value={site.id}
+                >
+                  {site.location_name ||
+                    `Site #${site.id}`}
+                </option>
+              ))}
+
+            </select>
+
+
+            <button
+              className="report-button"
+              onClick={analyzeSite}
+              disabled={analyzing || !selectedSite}
+            >
+              {analyzing
+                ? "⏳ Analyzing..."
+                : "⚡ Analyze Site"}
+            </button>
+
+          </div>
+        </div>
+
+
+        {/* NO SITES */}
+
+        {sites.length === 0 && (
+          <div className="report-section">
+            <h2>📍 No Sites Available</h2>
+
+            <p>
+              Create a site first before generating
+              a deployment report.
+            </p>
+          </div>
+        )}
+
+
+        {/* SITE REPORT */}
+
+        {selectedSite && (
+          <>
+            <div className="report-hero">
+
+              <div>
+                <div className="report-label">
+                  📊 Deployment Intelligence Report
+                </div>
+
+                <h2>
+                  {selectedSite.location_name ||
+                    `Site #${selectedSite.id}`}
+                </h2>
+
+                <p>
+                  Site #{selectedSite.id}
+                </p>
+              </div>
+
+              <button
+                className="report-button"
+                onClick={downloadReport}
+              >
+                📥 Download Report
+              </button>
+
+            </div>
+
+
+            {/* STATISTICS */}
+
+            <div className="report-grid">
+
+              <div className="report-card">
+                <span>Optimization / Site Score</span>
+
+                <strong>
+                  {selectedSite.solar_score ?? 0}
+                </strong>
+              </div>
+
+
+              <div className="report-card">
+                <span>☀️ Solar Score</span>
+
+                <strong>
+                  {selectedSite.solar_score ?? 0}
+                </strong>
+
+                <small>/100</small>
+              </div>
+
+
+              <div className="report-card">
+                <span>🌬️ Wind Score</span>
+
+                <strong>
+                  {selectedSite.wind_score ?? 0}
+                </strong>
+
+                <small>/100</small>
+              </div>
+
+
+              <div className="report-card">
+                <span>💨 Wind Potential</span>
+
+                <strong>
+                  {selectedSite.wind_potential ?? 0}
+                </strong>
+              </div>
+
+            </div>
+
+
+            {/* ANALYSIS */}
+
+            {analysis && (
+              <div className="report-section">
+
+                <h2>🌍 Environmental Analysis</h2>
+
+                <div className="report-summary">
+
+                  <div>
+                    <span>Solar Irradiance</span>
+
+                    <strong>
+                      {analysis.solar_irradiance ??
+                        "N/A"}{" "}
+                      kWh/m²/day
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>Temperature</span>
+
+                    <strong>
+                      {analysis.temperature ??
+                        "N/A"} °C
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>Wind Speed</span>
+
+                    <strong>
+                      {analysis.wind_speed ??
+                        "N/A"} m/s
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>Humidity</span>
+
+                    <strong>
+                      {analysis.humidity ??
+                        "N/A"} %
+                    </strong>
+                  </div>
+
+                </div>
+
+              </div>
+            )}
+
+
+            {/* RECOMMENDATION */}
+
+            <div className="report-section recommendation">
+
+              <h2>
+                ⭐ Deployment Recommendation
+              </h2>
+
+              <p>
+                {selectedSite.recommendation ||
+                  "Further feasibility assessment is recommended."}
+              </p>
+
+            </div>
+
+
+            {/* ASSESSMENT */}
+
+            <div className="report-section">
+
+              <h2>📋 Assessment Coverage</h2>
+
+              <div className="assessment-list">
+
+                <div>☑ Solar resource assessment</div>
+
+                <div>☑ Wind resource assessment</div>
+
+                <div>☑ Site suitability assessment</div>
+
+                <div>☑ Environmental analysis</div>
+
+                <div>☑ Renewable technology selection</div>
+
+                <div>☑ Deployment recommendation</div>
+
+              </div>
+
+            </div>
+
+          </>
+        )}
+
+      </div>
     </Layout>
   );
 }
