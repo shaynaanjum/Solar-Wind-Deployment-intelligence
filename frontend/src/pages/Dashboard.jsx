@@ -20,9 +20,9 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // ========================================
+  // =====================================================
   // LOAD SAVED SITES
-  // ========================================
+  // =====================================================
 
   const loadSites = async () => {
     try {
@@ -38,9 +38,9 @@ function Dashboard() {
     loadSites();
   }, []);
 
-  // ========================================
+  // =====================================================
   // ANALYZE SELECTED SITE
-  // ========================================
+  // =====================================================
 
   const analyzeSite = async () => {
     if (!selectedSiteId) {
@@ -71,27 +71,27 @@ function Dashboard() {
     }
   };
 
-  // ========================================
-  // MAP ANALYSIS RESULT
-  // ========================================
+  // =====================================================
+  // MAP RESULT
+  // =====================================================
 
   const handleMapResult = (data) => {
     setResult(data);
     setError("");
   };
 
-  // ========================================
+  // =====================================================
   // SELECTED SITE
-  // ========================================
+  // =====================================================
 
   const selectedSite = sites.find(
     (site) =>
       String(site.id) === String(selectedSiteId)
   );
 
-  // ========================================
+  // =====================================================
   // RENEWABLE SCORE
-  // ========================================
+  // =====================================================
 
   const renewableScore = selectedSite
     ? (
@@ -101,9 +101,9 @@ function Dashboard() {
       ).toFixed(1)
     : "--";
 
-  // ========================================
+  // =====================================================
   // DEPLOYMENT DECISION
-  // ========================================
+  // =====================================================
 
   const getDeploymentDecision = () => {
     if (!selectedSite) {
@@ -135,9 +135,9 @@ function Dashboard() {
     <Layout>
       <div className="dashboard-page">
 
-        {/* ================================= */}
+        {/* ================================================= */}
         {/* HEADER */}
-        {/* ================================= */}
+        {/* ================================================= */}
 
         <div className="dashboard-header">
           <h1>📊 Analysis Dashboard</h1>
@@ -148,28 +148,19 @@ function Dashboard() {
         </div>
 
 
-        {/* ================================= */}
+        {/* ================================================= */}
         {/* SITE INTELLIGENCE CONTROL */}
-        {/* ================================= */}
+        {/* ================================================= */}
 
-        <div
-          className="analysis-control"
-          style={{
-            background: "#ffffff",
-            padding: "20px",
-            borderRadius: "12px",
-            marginBottom: "25px",
-            border: "1px solid #e5e7eb",
-          }}
-        >
+        <div className="analysis-control">
 
           <h2>
             🔍 Site Intelligence Engine
           </h2>
 
           <p>
-            Select a saved renewable-energy site
-            and run the intelligence analysis.
+            Select a saved renewable-energy site and run
+            the intelligence analysis.
           </p>
 
           <div
@@ -178,8 +169,11 @@ function Dashboard() {
               gap: "12px",
               flexWrap: "wrap",
               marginTop: "15px",
+              alignItems: "center",
             }}
           >
+
+            {/* SITE SELECT */}
 
             <select
               value={selectedSiteId}
@@ -188,16 +182,7 @@ function Dashboard() {
                 setResult(null);
                 setError("");
               }}
-              style={{
-                flex: "1",
-                minWidth: "250px",
-                padding: "12px",
-                borderRadius: "8px",
-                border: "1px solid #d1d5db",
-                fontSize: "15px",
-              }}
             >
-
               <option value="">
                 Select a saved site
               </option>
@@ -215,24 +200,54 @@ function Dashboard() {
             </select>
 
 
+            {/* ANALYZE BUTTON */}
+
             <button
               onClick={analyzeSite}
               disabled={
                 loading || !selectedSiteId
               }
               style={{
-                padding: "12px 24px",
+                padding: "12px 22px",
+                minHeight: "42px",
                 border: "none",
                 borderRadius: "8px",
                 background: loading
                   ? "#9ca3af"
-                  : "#2563eb",
+                  : "#16a34a",
                 color: "#ffffff",
-                fontWeight: "600",
+                fontSize: "14px",
+                fontWeight: "700",
                 cursor:
                   loading || !selectedSiteId
                     ? "not-allowed"
                     : "pointer",
+                boxShadow:
+                  loading || !selectedSiteId
+                    ? "none"
+                    : "0 3px 8px rgba(22, 163, 74, 0.25)",
+                transition:
+                  "background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                if (!loading && selectedSiteId) {
+                  e.currentTarget.style.background =
+                    "#15803d";
+                  e.currentTarget.style.transform =
+                    "translateY(-1px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 5px 12px rgba(22, 163, 74, 0.3)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!loading && selectedSiteId) {
+                  e.currentTarget.style.background =
+                    "#16a34a";
+                  e.currentTarget.style.transform =
+                    "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 3px 8px rgba(22, 163, 74, 0.25)";
+                }
               }}
             >
               {loading
@@ -262,23 +277,16 @@ function Dashboard() {
         </div>
 
 
-        {/* ================================= */}
+        {/* ================================================= */}
         {/* SELECTED SITE INTELLIGENCE */}
-        {/* ================================= */}
+        {/* ================================================= */}
 
         {selectedSite && (
-          <div
-            style={{
-              background: "#ffffff",
-              padding: "20px",
-              borderRadius: "12px",
-              marginBottom: "25px",
-              border: "1px solid #e5e7eb",
-            }}
-          >
+          <div className="selected-site-card">
 
             <h2>
-              📍 {selectedSite.location_name ||
+              📍{" "}
+              {selectedSite.location_name ||
                 `Site #${selectedSite.id}`}
             </h2>
 
@@ -293,44 +301,48 @@ function Dashboard() {
             >
 
               <div>
-                <strong>☀ Solar Score</strong>
+                <strong>
+                  ☀ Solar Score
+                </strong>
+
                 <h3>
-                  {selectedSite.solar_score}/100
+                  {selectedSite.solar_score ?? "--"}/100
                 </h3>
               </div>
 
               <div>
-                <strong>💨 Wind Score</strong>
+                <strong>
+                  💨 Wind Score
+                </strong>
+
                 <h3>
-                  {selectedSite.wind_score}/100
+                  {selectedSite.wind_score ?? "--"}/100
                 </h3>
               </div>
 
               <div>
-                <strong>⚡ Renewable Score</strong>
+                <strong>
+                  ⚡ Renewable Score
+                </strong>
+
                 <h3>
                   {renewableScore}/100
                 </h3>
               </div>
 
               <div>
-                <strong>🌬 Wind Potential</strong>
+                <strong>
+                  🌬 Wind Potential
+                </strong>
+
                 <h3>
-                  {selectedSite.wind_potential}
+                  {selectedSite.wind_potential || "--"}
                 </h3>
               </div>
 
             </div>
 
-
-            <div
-              style={{
-                marginTop: "20px",
-                padding: "15px",
-                borderRadius: "8px",
-                background: "#eff6ff",
-              }}
-            >
+            <div className="selected-site-decision">
 
               <strong>
                 🚀 Deployment Decision
@@ -346,9 +358,9 @@ function Dashboard() {
         )}
 
 
-        {/* ================================= */}
+        {/* ================================================= */}
         {/* TOP STATISTICS */}
-        {/* ================================= */}
+        {/* ================================================= */}
 
         <div className="stats-grid">
 
@@ -359,9 +371,9 @@ function Dashboard() {
             style={{
               background:
                 "linear-gradient(135deg, #f59e0b, #f97316)",
+              color: "#ffffff",
             }}
           >
-
             <span>
               ☀ Solar Irradiance
             </span>
@@ -373,7 +385,6 @@ function Dashboard() {
             <small>
               kWh/m²/day
             </small>
-
           </div>
 
 
@@ -384,36 +395,20 @@ function Dashboard() {
             style={{
               background: "#ffffff",
               color: "#111827",
-              border:
-                "1px solid #e5e7eb",
+              border: "1px solid #e5e7eb",
             }}
           >
-
-            <span
-              style={{
-                color: "#374151",
-                fontWeight: "600",
-              }}
-            >
+            <span>
               🌡 Temperature
             </span>
 
-            <h2
-              style={{
-                color: "#111827",
-              }}
-            >
+            <h2>
               {result?.temperature ?? "--"}
             </h2>
 
-            <small
-              style={{
-                color: "#6b7280",
-              }}
-            >
+            <small>
               °C
             </small>
-
           </div>
 
 
@@ -424,9 +419,9 @@ function Dashboard() {
             style={{
               background:
                 "linear-gradient(135deg, #16a34a, #10b981)",
+              color: "#ffffff",
             }}
           >
-
             <span>
               💨 Wind Speed
             </span>
@@ -438,7 +433,6 @@ function Dashboard() {
             <small>
               m/s
             </small>
-
           </div>
 
 
@@ -449,9 +443,9 @@ function Dashboard() {
             style={{
               background:
                 "linear-gradient(135deg, #0891b2, #06b6d4)",
+              color: "#ffffff",
             }}
           >
-
             <span>
               💧 Humidity
             </span>
@@ -463,15 +457,14 @@ function Dashboard() {
             <small>
               %
             </small>
-
           </div>
 
         </div>
 
 
-        {/* ================================= */}
+        {/* ================================================= */}
         {/* ANALYSIS CARDS */}
-        {/* ================================= */}
+        {/* ================================================= */}
 
         <div className="dashboard-grid">
 
@@ -494,9 +487,9 @@ function Dashboard() {
         </div>
 
 
-        {/* ================================= */}
+        {/* ================================================= */}
         {/* MAP ANALYSIS */}
-        {/* ================================= */}
+        {/* ================================================= */}
 
         <div className="map-section">
 
@@ -520,9 +513,9 @@ function Dashboard() {
         </div>
 
 
-        {/* ================================= */}
+        {/* ================================================= */}
         {/* ANALYSIS RESULT */}
-        {/* ================================= */}
+        {/* ================================================= */}
 
         <div className="result-section">
 
@@ -533,9 +526,9 @@ function Dashboard() {
         </div>
 
 
-        {/* ================================= */}
+        {/* ================================================= */}
         {/* RESOURCE CHART */}
-        {/* ================================= */}
+        {/* ================================================= */}
 
         <div className="chart-section">
 
@@ -548,35 +541,20 @@ function Dashboard() {
         </div>
 
 
-        {/* ================================= */}
-        {/* MILESTONE 3 STATUS */}
-        {/* ================================= */}
+        {/* ================================================= */}
+        {/* DEPLOYMENT INTELLIGENCE STATUS */}
+        {/* ================================================= */}
 
-        <div
-          style={{
-            background: "#ffffff",
-            padding: "20px",
-            borderRadius: "12px",
-            marginTop: "25px",
-            border: "1px solid #e5e7eb",
-          }}
-        >
+        <div className="deployment-status">
 
           <h2>
             📈 Deployment Intelligence Status
           </h2>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "15px",
-              marginTop: "15px",
-            }}
-          >
+          <div className="deployment-status-grid">
 
-            <div>
+            <div className="deployment-status-item">
+
               <strong>
                 🧠 Site Intelligence
               </strong>
@@ -586,10 +564,12 @@ function Dashboard() {
                   ? "Operational"
                   : "Awaiting site"}
               </p>
+
             </div>
 
 
-            <div>
+            <div className="deployment-status-item">
+
               <strong>
                 ⚙ Optimization
               </strong>
@@ -599,10 +579,12 @@ function Dashboard() {
                   ? "Site comparison available"
                   : "Awaiting site"}
               </p>
+
             </div>
 
 
-            <div>
+            <div className="deployment-status-item">
+
               <strong>
                 📊 Forecasting
               </strong>
@@ -612,10 +594,12 @@ function Dashboard() {
                   ? "Analysis data available"
                   : "Awaiting analysis"}
               </p>
+
             </div>
 
 
-            <div>
+            <div className="deployment-status-item">
+
               <strong>
                 💰 Recommendation
               </strong>
@@ -626,6 +610,7 @@ function Dashboard() {
                     "Generated"
                   : "Awaiting site"}
               </p>
+
             </div>
 
           </div>
