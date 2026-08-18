@@ -1,17 +1,25 @@
-function WindCard() {
+function WindCard({ result }) {
   return (
-    <div
-      style={{
-        background: "white",
-        padding: "20px",
-        borderRadius: "10px",
-      }}
-    >
-      <h2>🌬 Wind Speed</h2>
+    <div className="dashboard-card">
 
-      <h1>18 km/h</h1>
+      <h2>🌬 Wind Potential</h2>
 
-      <p>Good for Turbines</p>
+      <h1>
+        {result ? result.wind_speed : "--"}
+      </h1>
+
+      <p>
+        {result
+          ? "m/s"
+          : "Select a location on the map"}
+      </p>
+
+      {result && (
+        <strong>
+          Score: {result.wind_score}/100
+        </strong>
+      )}
+
     </div>
   );
 }

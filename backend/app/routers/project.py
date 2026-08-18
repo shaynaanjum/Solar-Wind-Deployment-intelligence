@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.project import Project
 from app.schemas.project import ProjectCreate, ProjectResponse
+from app.auth.dependencies import admin_required
+
 
 router = APIRouter(
     prefix="/projects",
@@ -14,10 +16,12 @@ router = APIRouter(
 # -----------------------------
 # Create Project
 # -----------------------------
+
 @router.post("/", response_model=ProjectResponse)
 def create_project(
     project: ProjectCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(admin_required)
 ):
 
     new_project = Project(
@@ -35,8 +39,11 @@ def create_project(
 # -----------------------------
 # Get All Projects
 # -----------------------------
+
 @router.get("/", response_model=list[ProjectResponse])
-def get_projects(db: Session = Depends(get_db)):
+def get_projects(
+    db: Session = Depends(get_db)
+):
 
     projects = db.query(Project).all()
 
@@ -46,6 +53,7 @@ def get_projects(db: Session = Depends(get_db)):
 # -----------------------------
 # Get Project By ID
 # -----------------------------
+
 @router.get("/{project_id}", response_model=ProjectResponse)
 def get_project(
     project_id: int,
@@ -68,6 +76,7 @@ def get_project(
 # -----------------------------
 # Update Project
 # -----------------------------
+
 @router.put("/{project_id}", response_model=ProjectResponse)
 def update_project(
     project_id: int,
@@ -97,6 +106,7 @@ def update_project(
 # -----------------------------
 # Delete Project
 # -----------------------------
+
 @router.delete("/{project_id}")
 def delete_project(
     project_id: int,

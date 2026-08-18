@@ -1,123 +1,83 @@
-# 🌍 Solar & Wind Deployment Intelligence Platform
+# 🌍 AI-Powered Solar & Wind Deployment Intelligence Platform
 
-# Milestone 1 – Project Initialization & Core Setup
+## 📌 Project Overview
 
-## Project Overview
+The **AI-Powered Solar & Wind Deployment Intelligence Platform** is a web-based application designed to analyze the renewable energy potential of geographical locations.
 
-The Solar & Wind Deployment Intelligence Platform is a web-based application that helps analyze the renewable energy potential of a selected location. Users can select a location using latitude and longitude or an interactive map, and the system provides weather information along with a preliminary solar and wind suitability analysis.
----
-# Objectives
+Users can select a location using latitude and longitude or an interactive map. The system retrieves environmental information and provides preliminary solar and wind suitability analysis.
 
-The objectives of Milestone 1 were to:
-
-- Define the project objectives and workflow.
-- Design the overall system architecture.
-- Design the database schema.
-- Set up the frontend and backend development environments.
-- Develop the initial user interface.
-- Build the backend API.
-- Integrate weather data.
-- Develop the initial renewable energy analysis module.
+The platform is being developed through multiple milestones, with each milestone adding new functionality to the system.
 
 ---
 
-# Completed Work
+# 🎯 Project Objectives
 
-## 1. Project Initialization
+The main objectives of the platform are:
 
-- Created project repository.
-- Organized project folder structure.
-- Configured Python virtual environment.
-- Installed project dependencies.
-
----
-
-## 2. Frontend Development
-
-Developed the frontend using React and Vite.
-
-Implemented:
-
-- Home page
-- Latitude input
-- Longitude input
-- Analyze button
-- Loading animation
-- Weather information cards
-- Solar score progress bar
-- Wind score progress bar
-- Recommendation display
+- Analyze renewable energy potential of geographical locations.
+- Provide environmental and weather information.
+- Calculate preliminary solar and wind suitability scores.
+- Provide renewable energy deployment recommendations.
+- Allow users to select locations using an interactive map.
+- Provide secure user authentication.
+- Manage renewable energy projects and sites.
+- Visualize renewable resource information through dashboards and charts.
+- Provide a foundation for future AI/ML-based renewable energy prediction.
 
 ---
 
-## 3. Interactive Map
+# 🛠️ Technology Stack
 
-Integrated Leaflet with OpenStreetMap.
+## Frontend
 
-Features:
+- React.js
+- JavaScript
+- Vite
+- CSS
+- Axios
+- React-Leaflet
+- Leaflet
+- OpenStreetMap
+- Chart.js
 
-- Interactive map
-- Location selection
-- Marker placement
-- Automatic coordinate selection
+## Backend
 
----
+- Python
+- FastAPI
+- Uvicorn
+- SQLAlchemy
+- Pydantic
+- JWT Authentication
 
-## 4. Backend Development
+## Database
 
-Developed REST APIs using FastAPI.
-
-Implemented:
-
-- Analyze location endpoint
-- Weather service integration
-- JSON response generation
-- Input validation
-
----
-
-## 5. Database Design
-
-Designed the initial database using SQLAlchemy.
-
-Models created:
-
-- User
-- Project
-- Site
+- PostgreSQL
+- SQLAlchemy ORM
 
 ---
 
-## 6. Weather API Integration
+# 🏗️ System Architecture
 
-Integrated OpenWeather API.
+```text
+                    ┌─────────────────────┐
+                    │    React Frontend   │
+                    │       + Vite        │
+                    └──────────┬──────────┘
+                               │
+                         HTTP / JSON
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │    FastAPI Backend  │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+              ▼                ▼                ▼
+       ┌─────────────┐  ┌──────────────┐  ┌──────────────┐
+       │ PostgreSQL  │  │ Weather /    │  │ Renewable    │
+       │ Database    │  │ Environment  │  │ Analysis     │
+       └─────────────┘  │ Data         │  └──────────────┘
+                        └──────────────┘
 
-Retrieved data:
-
-- Temperature
-- Humidity
-- Wind Speed
----
-## 7. Renewable Energy Analysis
-
-Implemented a basic renewable energy suitability analysis.
-
-The analysis currently uses weather parameters to generate:
-
-- Solar Score
-- Wind Score
-- Recommendation
-
-Example Response
-
-```json
-{
-    "latitude": 23.8048,
-    "longitude": 79.8838,
-    "temperature": 27.18,
-    "humidity": 83,
-    "wind_speed": 6.01,
-    "solar_score": 85,
-    "wind_score": 80,
-    "recommendation": "Moderate Renewable Potential"
-}
+                        

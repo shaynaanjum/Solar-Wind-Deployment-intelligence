@@ -1,231 +1,436 @@
+import { useState } from "react";
+import API from "../services/api";
+
 function ResultCard({ result }) {
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const saveSite = async () => {
+    if (!result || saving || saved) {
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      const siteData = {
+        location_name:
+          result.location_name || "Unknown Location",
+
+        latitude: parseFloat(result.latitude),
+        longitude: parseFloat(result.longitude),
+
+        solar_score: parseFloat(result.solar_score),
+        wind_score: parseFloat(result.wind_score),
+
+        wind_potential: parseFloat(result.wind_potential),
+
+        recommendation: result.recommendation,
+      };
+
+      console.log("Saving site:", siteData);
+
+      await API.post("/sites/", siteData);
+
+      setSaved(true);
+
+      alert("Site saved successfully!");
+
+    } catch (error) {
+      console.error("Save site error:", error);
+
+      const detail =
+        error.response?.data?.detail;
+
+      alert(
+        detail
+          ? `Error saving site:\n${detail}`
+          : "Error saving site. Check Console."
+      );
+
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (!result) {
     return (
-      <div
-        style={{
-          background: "#fff",
-          padding: "30px",
-          borderRadius: "20px",
-          marginTop: "25px",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-          textAlign: "center",
-        }}
-      >
-        <h2>📊 Renewable Energy Analysis</h2>
-        <p style={{ color: "#666", marginTop: "15px" }}>
-          Click anywhere on the map to analyze a location.
-        </p>
+      <div className="result-card">
+
+        <div className="result-header">
+          <h2>📊 Renewable Energy Analysis</h2>
+
+          <p>
+            Select a location on the map to view
+            the analysis.
+          </p>
+        </div>
+
+        <div className="result-empty">
+
+          <div className="empty-icon">
+            📍
+          </div>
+
+          <h3>
+            No Analysis Available
+          </h3>
+
+          <p>
+            Click anywhere on the map to analyze
+            a location.
+          </p>
+
+        </div>
+
       </div>
     );
   }
 
-  const cardStyle = {
-    background: "#fff",
-    borderRadius: "18px",
-    padding: "20px",
-    boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
-  };
-
-  const infoCard = {
-    background: "#f8fafc",
-    borderRadius: "14px",
-    padding: "18px",
-    textAlign: "center",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-  };
-
   return (
-    <div
-      style={{
-        marginTop: "30px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "25px",
-      }}
-    >
-      {/* Heading */}
+    <div className="result-card">
 
-      <div style={cardStyle}>
-        <h1 style={{ margin: 0 }}>📊 Renewable Energy Analysis</h1>
-        <p style={{ color: "#666", marginTop: "8px" }}>
-          Environmental, Terrain & Renewable Energy Statistics
+      {/* HEADER */}
+
+      <div className="result-header">
+
+        <h2>
+          📊 Renewable Energy Analysis
+        </h2>
+
+        <p>
+          Environmental, terrain & renewable
+          energy statistics
         </p>
+
       </div>
 
-      {/* Location + Weather */}
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "20px",
-        }}
-      >
-        <div style={cardStyle}>
-          <h2>📍 Location</h2>
+      {/* ============================= */}
+      {/* SELECTED LOCATION */}
+      {/* ============================= */}
 
-          <p>
-            <strong>Latitude</strong>
-            <br />
-            {result.latitude}
-          </p>
+      <div className="selected-location-card">
 
-          <p>
-            <strong>Longitude</strong>
-            <br />
-            {result.longitude}
-          </p>
-
-          <p>
-            <strong>Elevation</strong>
-            <br />
-            {result.elevation} meters
-          </p>
+        <div className="selected-location-icon">
+          📍
         </div>
 
-        <div style={cardStyle}>
-          <h2>🌤 Weather</h2>
+        <div className="selected-location-content">
 
-          <p>
-            <strong>Temperature</strong>
-            <br />
-            {result.temperature} °C
-          </p>
+          <span className="selected-location-label">
+            SELECTED LOCATION
+          </span>
 
-          <p>
-            <strong>Humidity</strong>
-            <br />
-            {result.humidity} %
-          </p>
+          <h2>
+            {result.location_name ||
+              "Unknown Location"}
+          </h2>
 
-          <p>
-            <strong>Wind Speed</strong>
-            <br />
-            {result.wind_speed} m/s
-          </p>
+          <div className="coordinates">
+
+            <span>
+              Latitude:
+              <strong>
+                {Number(result.latitude).toFixed(5)}
+              </strong>
+            </span>
+
+            <span>
+              Longitude:
+              <strong>
+                {Number(result.longitude).toFixed(5)}
+              </strong>
+            </span>
+
+          </div>
+
         </div>
+
       </div>
 
-      {/* Solar Prediction */}
 
-      <div style={cardStyle}>
-        <h2>☀ Solar Potential Prediction</h2>
+      {/* ============================= */}
+      {/* LOCATION INFORMATION */}
+      {/* ============================= */}
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4,1fr)",
-            gap: "18px",
-            marginTop: "20px",
-          }}
-        >
-          <div style={infoCard}>
-            <h3>Solar Irradiance</h3>
-            <h2>{result.solar_irradiance}</h2>
-            <p>kWh/m²/day</p>
+      <div className="result-section-card">
+
+        <h3>
+          📍 Location Information
+        </h3>
+
+        <div className="result-grid">
+
+          <div className="result-item">
+
+            <span>
+              Location Name
+            </span>
+
+            <strong>
+              {result.location_name ||
+                "Unknown Location"}
+            </strong>
+
           </div>
 
-          <div style={infoCard}>
-            <h3>Solar Score</h3>
-            <h2>{result.solar_score}</h2>
-            <p>/100</p>
+          <div className="result-item">
+
+            <span>
+              Latitude
+            </span>
+
+            <strong>
+              {Number(result.latitude).toFixed(5)}
+            </strong>
+
           </div>
 
-          <div style={infoCard}>
-            <h3>Elevation</h3>
-            <h2>{result.elevation}</h2>
-            <p>meters</p>
+          <div className="result-item">
+
+            <span>
+              Longitude
+            </span>
+
+            <strong>
+              {Number(result.longitude).toFixed(5)}
+            </strong>
+
           </div>
 
-          <div
-            style={{
-              ...infoCard,
-              background: "#dcfce7",
-            }}
-          >
-            <h3>Potential</h3>
+          <div className="result-item">
 
-            <h2 style={{ color: "#15803d" }}>
-              {result.solar_score >= 80
-                ? "Excellent"
-                : result.solar_score >= 60
+            <span>
+              Elevation
+            </span>
+
+            <strong>
+              {result.elevation}
+            </strong>
+
+            <small>
+              meters
+            </small>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* ============================= */}
+      {/* WEATHER */}
+      {/* ============================= */}
+
+      <div className="result-section-card">
+
+        <h3>
+          🌤 Weather Conditions
+        </h3>
+
+        <div className="result-grid">
+
+          <div className="result-item">
+
+            <span>
+              Temperature
+            </span>
+
+            <strong>
+              {result.temperature} °C
+            </strong>
+
+          </div>
+
+          <div className="result-item">
+
+            <span>
+              Humidity
+            </span>
+
+            <strong>
+              {result.humidity}%
+            </strong>
+
+          </div>
+
+          <div className="result-item">
+
+            <span>
+              Wind Speed
+            </span>
+
+            <strong>
+              {result.wind_speed} m/s
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* ============================= */}
+      {/* SOLAR */}
+      {/* ============================= */}
+
+      <div className="result-section-card">
+
+        <h3>
+          ☀ Solar Potential
+        </h3>
+
+        <div className="result-grid">
+
+          <div className="result-item">
+
+            <span>
+              Solar Irradiance
+            </span>
+
+            <strong>
+              {result.solar_irradiance}
+            </strong>
+
+            <small>
+              kWh/m²/day
+            </small>
+
+          </div>
+
+          <div className="result-item">
+
+            <span>
+              Solar Score
+            </span>
+
+            <strong>
+              {result.solar_score}/100
+            </strong>
+
+          </div>
+
+          <div className="result-item">
+
+            <span>
+              Potential
+            </span>
+
+            <strong
+              className={
+                result.solar_score >= 70
+                  ? "score-good"
+                  : "score-average"
+              }
+            >
+              {result.solar_score >= 70
                 ? "Good"
-                : "Moderate"}
-            </h2>
+                : result.solar_score >= 50
+                ? "Moderate"
+                : "Low"}
+            </strong>
+
           </div>
+
         </div>
+
       </div>
 
-      {/* Wind Prediction */}
 
-      <div style={cardStyle}>
-        <h2>💨 Wind Potential Prediction</h2>
+      {/* ============================= */}
+      {/* WIND */}
+      {/* ============================= */}
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4,1fr)",
-            gap: "18px",
-            marginTop: "20px",
-          }}
+      <div className="result-section-card">
+
+        <h3>
+          💨 Wind Potential
+        </h3>
+
+        <div className="result-grid">
+
+          <div className="result-item">
+
+            <span>
+              Wind Speed
+            </span>
+
+            <strong>
+              {result.wind_speed} m/s
+            </strong>
+
+          </div>
+
+          <div className="result-item">
+
+            <span>
+              Wind Score
+            </span>
+
+            <strong>
+              {result.wind_score}/100
+            </strong>
+
+          </div>
+
+          <div className="result-item">
+
+            <span>
+              Wind Potential
+            </span>
+
+            <strong>
+              {result.wind_potential}
+            </strong>
+
+            <small>
+              estimated potential
+            </small>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* ============================= */}
+      {/* RECOMMENDATION */}
+      {/* ============================= */}
+
+      <div className="recommendation-card">
+
+        <h3>
+          ⭐ Final Recommendation
+        </h3>
+
+        <h2>
+          {result.recommendation}
+        </h2>
+
+        <p>
+          Solar Score: {result.solar_score}/100
+          {" • "}
+          Wind Score: {result.wind_score}/100
+        </p>
+
+        <button
+          className="save-site-button"
+          onClick={saveSite}
+          disabled={saving || saved}
         >
-          <div style={infoCard}>
-            <h3>Wind Speed</h3>
-            <h2>{result.wind_speed}</h2>
-            <p>m/s</p>
-          </div>
+          {saving
+            ? "Saving..."
+            : saved
+            ? "✓ Site Saved"
+            : "💾 Save This Site"}
+        </button>
 
-          <div style={infoCard}>
-            <h3>Wind Score</h3>
-            <h2>{result.wind_score}</h2>
-            <p>/100</p>
-          </div>
-
-          <div style={infoCard}>
-            <h3>Wind Potential</h3>
-            <h2>{result.wind_potential}</h2>
-          </div>
-
-          <div
-            style={{
-              ...infoCard,
-              background: "#e0f2fe",
-            }}
-          >
-            <h3>Status</h3>
-
-            <h2 style={{ color: "#0369a1" }}>
-              {result.wind_score >= 70
-                ? "Recommended"
-                : "Average"}
-            </h2>
-          </div>
-        </div>
       </div>
 
-      {/* Recommendation */}
-
-      <div
-        style={{
-          background: "linear-gradient(135deg,#16a34a,#22c55e)",
-          color: "#fff",
-          borderRadius: "18px",
-          padding: "25px",
-          boxShadow: "0 10px 25px rgba(0,0,0,.12)",
-        }}
-      >
-        <h2>✅ Final Recommendation</h2>
-
-        <h1>{result.recommendation}</h1>
-
-        <p>
-          Solar Score : {result.solar_score}/100
-        </p>
-
-        <p>
-          Wind Score : {result.wind_score}/100
-        </p>
-      </div>
     </div>
   );
 }
