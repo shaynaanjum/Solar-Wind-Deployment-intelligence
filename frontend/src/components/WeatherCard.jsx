@@ -1,33 +1,73 @@
-function WeatherCard({ result }) {
+function WeatherCard() {
+
+
+
   return (
-    <div className="dashboard-card">
+
+
+
+    <div
+
+
+
+      style={{
+
+
+
+        background: "white",
+
+
+
+        padding: "20px",
+
+
+
+        borderRadius: "10px",
+
+
+
+      }}
+
+
+
+    >
+
+
 
       <h2>🌤 Weather</h2>
 
-      <h1>
-        {result
-          ? `${result.temperature}°C`
-          : "--"}
-      </h1>
 
-      {result ? (
-        <>
-          <p>
-            💧 Humidity: {result.humidity}%
-          </p>
 
-          <p>
-            💨 Wind: {result.wind_speed} m/s
-          </p>
-        </>
-      ) : (
-        <p>
-          Select a location on the map
-        </p>
-      )}
+
+
+
+
+      <h1>31°C</h1>
+
+
+
+
+
+
+
+      <p>Clear Sky</p>
+
+
 
     </div>
+
+
+
   );
+
+
+
 }
+
+
+
+
+
+
 
 export default WeatherCard;

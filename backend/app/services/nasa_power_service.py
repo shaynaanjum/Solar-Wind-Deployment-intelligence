@@ -1,10 +1,7 @@
 import requests
-from functools import lru_cache
 
 
-@lru_cache(maxsize=100)
 def get_nasa_power_data(latitude, longitude):
-
     url = (
         "https://power.larc.nasa.gov/api/temporal/daily/point"
         f"?parameters=ALLSKY_SFC_SW_DWN,T2M"
@@ -17,12 +14,7 @@ def get_nasa_power_data(latitude, longitude):
     )
 
     try:
-
-        response = requests.get(
-            url,
-            timeout=5
-        )
-
+        response = requests.get(url, timeout=15)
         response.raise_for_status()
 
         data = response.json()
@@ -43,7 +35,6 @@ def get_nasa_power_data(latitude, longitude):
         }
 
     except Exception as e:
-
         print("NASA POWER Error:", e)
 
         return {

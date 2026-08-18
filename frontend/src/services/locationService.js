@@ -1,30 +1,10 @@
-import API from "./api";
+import api from "../api/api";
 
-export const analyzeLocation = async (
-  latitude,
-  longitude
-) => {
-  try {
-    const response = await API.post(
-      "/analyze",
-      {
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
-      },
-      {
-        timeout: 30000,
-      }
-    );
+export const analyzeLocation = async (latitude, longitude) => {
+  const response = await api.post("/analyze", {
+    latitude,
+    longitude,
+  });
 
-    return response.data;
-
-  } catch (error) {
-
-    console.error(
-      "Analyze Location Error:",
-      error.response?.data || error.message
-    );
-
-    throw error;
-  }
+  return response.data;
 };
