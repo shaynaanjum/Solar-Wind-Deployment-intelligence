@@ -1,9 +1,10 @@
 import requests
-from functools import lru_cache
 
 
-@lru_cache(maxsize=100)
 def get_elevation(latitude, longitude):
+    """
+    Returns elevation (meters) for a location.
+    """
 
     url = (
         "https://api.open-elevation.com/api/v1/lookup"
@@ -11,12 +12,7 @@ def get_elevation(latitude, longitude):
     )
 
     try:
-
-        response = requests.get(
-            url,
-            timeout=5
-        )
-
+        response = requests.get(url, timeout=10)
         response.raise_for_status()
 
         data = response.json()
@@ -24,7 +20,5 @@ def get_elevation(latitude, longitude):
         return data["results"][0]["elevation"]
 
     except Exception as e:
-
         print("Elevation Error:", e)
-
         return 0

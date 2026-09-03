@@ -1,159 +1,58 @@
-def calculate_solar_score(
-    solar_irradiance,
-    temperature,
-    humidity
-):
-    """
-    Calculate Solar Energy Score out of 100.
+def calculate_solar_score(solar_irradiance, temperature, humidity):
 
-    Weight:
-    - Solar Irradiance: 60%
-    - Temperature: 25%
-    - Humidity: 15%
-    """
+    score = 0
 
-    # -----------------------------
-    # Solar Irradiance - 60 points
-    # -----------------------------
+    # Solar Irradiance (60%)
+    if solar_irradiance >= 7:
+        score += 60
+    elif solar_irradiance >= 5:
+        score += 50
+    elif solar_irradiance >= 3:
+        score += 40
+    else:
+        score += 25
 
-    irradiance_score = min(
-        (solar_irradiance / 7) * 60,
-        60
-    )
-
-    # -----------------------------
-    # Temperature - 25 points
-    # -----------------------------
-
+    # Temperature (25%)
     if 20 <= temperature <= 35:
-        temperature_score = 25
-
-    elif 15 <= temperature < 20:
-        temperature_score = 20
-
-    elif 35 < temperature <= 40:
-        temperature_score = 20
-
-    elif 10 <= temperature < 15:
-        temperature_score = 12
-
-    elif 40 < temperature <= 45:
-        temperature_score = 12
-
+        score += 25
+    elif 15 <= temperature <= 40:
+        score += 18
     else:
-        temperature_score = 7
+        score += 10
 
-    # -----------------------------
-    # Humidity - 15 points
-    # -----------------------------
-
-    if humidity <= 40:
-        humidity_score = 15
-
-    elif humidity <= 60:
-        humidity_score = 13
-
-    elif humidity <= 75:
-        humidity_score = 10
-
-    elif humidity <= 85:
-        humidity_score = 7
-
+    # Humidity (15%)
+    if humidity < 50:
+        score += 15
+    elif humidity < 70:
+        score += 10
     else:
-        humidity_score = 4
+        score += 5
 
-    # -----------------------------
-    # Final Solar Score
-    # -----------------------------
-
-    score = (
-        irradiance_score
-        + temperature_score
-        + humidity_score
-    )
-
-    return round(
-        min(score, 100),
-        2
-    )
+    return round(score, 2)
 
 
-def calculate_wind_score(
-    wind_speed,
-    elevation
-):
-    """
-    Calculate Wind Energy Score out of 100.
+def calculate_wind_score(wind_speed, elevation):
 
-    Weight:
-    - Wind Speed: 80%
-    - Elevation: 20%
-    """
+    score = 0
 
-    # -----------------------------
-    # Wind Speed - 80 points
-    # -----------------------------
-
+    # Wind Speed (80%)
     if wind_speed >= 8:
-
-        wind_score = 80
-
+        score += 80
     elif wind_speed >= 6:
-
-        wind_score = 65 + (
-            (wind_speed - 6) / 2
-        ) * 15
-
+        score += 65
     elif wind_speed >= 4:
-
-        wind_score = 50 + (
-            (wind_speed - 4) / 2
-        ) * 15
-
-    elif wind_speed >= 2:
-
-        wind_score = 30 + (
-            (wind_speed - 2) / 2
-        ) * 20
-
+        score += 50
     else:
+        score += 30
 
-        wind_score = 15
-
-    # -----------------------------
-    # Elevation - 20 points
-    # -----------------------------
-
-    if elevation >= 1000:
-
-        elevation_score = 20
-
-    elif elevation >= 500:
-
-        elevation_score = 15 + (
-            (elevation - 500) / 500
-        ) * 5
-
-    elif elevation >= 100:
-
-        elevation_score = 10 + (
-            (elevation - 100) / 400
-        ) * 5
-
+    # Elevation (20%)
+    if elevation > 1000:
+        score += 20
+    elif elevation > 500:
+        score += 15
+    elif elevation > 100:
+        score += 10
     else:
+        score += 5
 
-        elevation_score = 5
-
-    # -----------------------------
-    # Final Wind Score
-    # -----------------------------
-
-    score = (
-        wind_score
-        + elevation_score
-    )
-
-    return round(
-        min(score, 100),
-        2
-    )
+    return round(score, 2)

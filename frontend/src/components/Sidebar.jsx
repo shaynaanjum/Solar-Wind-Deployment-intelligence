@@ -8,14 +8,6 @@ function Sidebar() {
     navigate("/");
   };
 
-  const menuStyle = {
-    padding: "12px",
-    marginBottom: "10px",
-    borderRadius: "6px",
-    cursor: "pointer",
-    background: "#374151",
-  };
-
   return (
     <div
       style={{
@@ -26,43 +18,24 @@ function Sidebar() {
         padding: "20px",
       }}
     >
-      <h2 style={{ marginBottom: "30px" }}>
-        Navigation
-      </h2>
+      <h2 style={{ marginBottom: "30px" }}>Navigation</h2>
 
-      <div
-        style={menuStyle}
-        onClick={() => navigate("/dashboard")}
-      >
+      <div style={menuStyle} onClick={() => navigate("/dashboard")}>
         📊 Dashboard
       </div>
 
-      <div
-        style={menuStyle}
-        onClick={() => navigate("/projects")}
-      >
+      <div style={menuStyle} onClick={() => navigate("/projects")}>
         📁 Projects
       </div>
+<div
+  style={menuStyle}
+  onClick={() => navigate("/sites")}
+>
+  📍 Sites
+</div>
 
-      <div
-        style={menuStyle}
-        onClick={() => navigate("/sites")}
-      >
-        📍 Sites
-      </div>
-
-      <div
-        style={menuStyle}
-        onClick={() => navigate("/optimization")}
-      >
-        ⚡ Optimization
-      </div>
-
-      <div
-        style={menuStyle}
-        onClick={() => navigate("/investment")}
-      >
-        💰 Investment
+      <div style={menuStyle}>
+        📈 Analysis
       </div>
 
       <div
@@ -87,7 +60,6 @@ function Sidebar() {
           border: "none",
           borderRadius: "6px",
           cursor: "pointer",
-          fontWeight: "600",
         }}
       >
         🚪 Logout
@@ -95,5 +67,13 @@ function Sidebar() {
     </div>
   );
 }
+
+const menuStyle = {
+  padding: "12px",
+  marginBottom: "10px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  background: "#374151",
+};
 
 export default Sidebar;

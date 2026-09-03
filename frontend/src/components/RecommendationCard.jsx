@@ -1,21 +1,17 @@
-function RecommendationCard({ result }) {
+function RecommendationCard() {
   return (
-    <div className="dashboard-card">
-
+    <div
+      style={{
+        background: "white",
+        padding: "20px",
+        borderRadius: "10px",
+      }}
+    >
       <h2>🤖 AI Recommendation</h2>
 
-      <p className="recommendation-text">
-        {result
-          ? result.recommendation
-          : "Select a location to get a renewable energy recommendation."}
+      <p>
+        Recommended for both Solar and Wind deployment.
       </p>
-
-      {result && (
-        <strong>
-          Renewable Energy Potential
-        </strong>
-      )}
-
     </div>
   );
 }

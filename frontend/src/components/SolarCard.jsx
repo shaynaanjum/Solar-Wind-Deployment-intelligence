@@ -1,25 +1,17 @@
-function SolarCard({ result }) {
+function SolarCard() {
   return (
-    <div className="dashboard-card">
-
+    <div
+      style={{
+        background: "white",
+        padding: "20px",
+        borderRadius: "10px",
+      }}
+    >
       <h2>☀ Solar Potential</h2>
 
-      <h1>
-        {result ? result.solar_irradiance : "--"}
-      </h1>
+      <h1>8.5 kWh/m²/day</h1>
 
-      <p>
-        {result
-          ? "kWh/m²/day"
-          : "Select a location on the map"}
-      </p>
-
-      {result && (
-        <strong>
-          Score: {result.solar_score}/100
-        </strong>
-      )}
-
+      <p>Excellent Solar Resource</p>
     </div>
   );
 }

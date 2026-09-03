@@ -1,83 +1,123 @@
-# 🌍 AI-Powered Solar & Wind Deployment Intelligence Platform
+# 🌍 Solar & Wind Deployment Intelligence Platform
 
-## 📌 Project Overview
+# Milestone 1 – Project Initialization & Core Setup
 
-The **AI-Powered Solar & Wind Deployment Intelligence Platform** is a web-based application designed to analyze the renewable energy potential of geographical locations.
+## Project Overview
 
-Users can select a location using latitude and longitude or an interactive map. The system retrieves environmental information and provides preliminary solar and wind suitability analysis.
+The Solar & Wind Deployment Intelligence Platform is a web-based application that helps analyze the renewable energy potential of a selected location. Users can select a location using latitude and longitude or an interactive map, and the system provides weather information along with a preliminary solar and wind suitability analysis.
+---
+# Objectives
 
-The platform is being developed through multiple milestones, with each milestone adding new functionality to the system.
+The objectives of Milestone 1 were to:
+
+- Define the project objectives and workflow.
+- Design the overall system architecture.
+- Design the database schema.
+- Set up the frontend and backend development environments.
+- Develop the initial user interface.
+- Build the backend API.
+- Integrate weather data.
+- Develop the initial renewable energy analysis module.
 
 ---
 
-# 🎯 Project Objectives
+# Completed Work
 
-The main objectives of the platform are:
+## 1. Project Initialization
 
-- Analyze renewable energy potential of geographical locations.
-- Provide environmental and weather information.
-- Calculate preliminary solar and wind suitability scores.
-- Provide renewable energy deployment recommendations.
-- Allow users to select locations using an interactive map.
-- Provide secure user authentication.
-- Manage renewable energy projects and sites.
-- Visualize renewable resource information through dashboards and charts.
-- Provide a foundation for future AI/ML-based renewable energy prediction.
+- Created project repository.
+- Organized project folder structure.
+- Configured Python virtual environment.
+- Installed project dependencies.
 
 ---
 
-# 🛠️ Technology Stack
+## 2. Frontend Development
 
-## Frontend
+Developed the frontend using React and Vite.
 
-- React.js
-- JavaScript
-- Vite
-- CSS
-- Axios
-- React-Leaflet
-- Leaflet
-- OpenStreetMap
-- Chart.js
+Implemented:
 
-## Backend
-
-- Python
-- FastAPI
-- Uvicorn
-- SQLAlchemy
-- Pydantic
-- JWT Authentication
-
-## Database
-
-- PostgreSQL
-- SQLAlchemy ORM
+- Home page
+- Latitude input
+- Longitude input
+- Analyze button
+- Loading animation
+- Weather information cards
+- Solar score progress bar
+- Wind score progress bar
+- Recommendation display
 
 ---
 
-# 🏗️ System Architecture
+## 3. Interactive Map
 
-```text
-                    ┌─────────────────────┐
-                    │    React Frontend   │
-                    │       + Vite        │
-                    └──────────┬──────────┘
-                               │
-                         HTTP / JSON
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │    FastAPI Backend  │
-                    └──────────┬──────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              │                │                │
-              ▼                ▼                ▼
-       ┌─────────────┐  ┌──────────────┐  ┌──────────────┐
-       │ PostgreSQL  │  │ Weather /    │  │ Renewable    │
-       │ Database    │  │ Environment  │  │ Analysis     │
-       └─────────────┘  │ Data         │  └──────────────┘
-                        └──────────────┘
+Integrated Leaflet with OpenStreetMap.
 
-                        
+Features:
+
+- Interactive map
+- Location selection
+- Marker placement
+- Automatic coordinate selection
+
+---
+
+## 4. Backend Development
+
+Developed REST APIs using FastAPI.
+
+Implemented:
+
+- Analyze location endpoint
+- Weather service integration
+- JSON response generation
+- Input validation
+
+---
+
+## 5. Database Design
+
+Designed the initial database using SQLAlchemy.
+
+Models created:
+
+- User
+- Project
+- Site
+
+---
+
+## 6. Weather API Integration
+
+Integrated OpenWeather API.
+
+Retrieved data:
+
+- Temperature
+- Humidity
+- Wind Speed
+---
+## 7. Renewable Energy Analysis
+
+Implemented a basic renewable energy suitability analysis.
+
+The analysis currently uses weather parameters to generate:
+
+- Solar Score
+- Wind Score
+- Recommendation
+
+Example Response
+
+```json
+{
+    "latitude": 23.8048,
+    "longitude": 79.8838,
+    "temperature": 27.18,
+    "humidity": 83,
+    "wind_speed": 6.01,
+    "solar_score": 85,
+    "wind_score": 80,
+    "recommendation": "Moderate Renewable Potential"
+}
